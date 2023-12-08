@@ -5,7 +5,8 @@ from sqlalchemy.orm import sessionmaker
 SQLALCHEMY_DATABASE_URL = "postgresql://cbmlnwbm:GA-hSt6paxiSi19Xzl0p2jAnhJaA3sog@flora.db.elephantsql.com/cbmlnwbm"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
+    SQLALCHEMY_DATABASE_URL,
+    pool_pre_ping=True
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
