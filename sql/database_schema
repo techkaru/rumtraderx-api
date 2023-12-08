@@ -1,0 +1,247 @@
+//// Docs: https://dbml.dbdiagram.io/docs
+//// -- LEVEL 1
+//// -- Schemas, Tables and References
+
+// Creating tables
+// You can define the tables with full schema names
+Table product {
+  id int [pk, increment]
+  category varchar
+  sku varchar [null]
+  name varchar
+  slug varchar
+  description text
+  made_from varchar
+  distillation_type varchar
+  aging_climate varchar [null]
+  aging_type varchar [null]
+  batch int [null]
+  abv decimal
+  size int
+  bottled_year int [null]
+  year int [null]
+  age int [null]
+  total_bottles int [null]
+  created_at varchar
+  main_picture varchar [null]
+  is_single_cask varchar [null]
+  cask_number varchar [null]
+  is_bio bool [null]
+  is_parcellaire bool [null]
+  is_approved bool
+  is_discontinued bool [null]
+  updated_date date
+  production_method varchar
+  production_method_detail_id int [ref: > production_method_detail.id, null]
+  brand_id int [ref: > brand.id]
+  distillery_id int [ref: > distillery.id]
+  bottler_id int [ref: > bottler.id, null]
+  canne_type_id int [ref: > canne_type.id, null]
+  region_id int [ref: > region.id]
+}
+
+Table production_method_detail {
+  id int [pk, increment]
+  name varchar
+}
+
+Table photo_product {
+  id int [pk, increment]
+  external_id varchar
+  url varchar
+  product_id int [ref: > product.id]
+}
+
+Table price {
+  id int [pk, increment]
+  date timestamp
+  product_id int [ref: > product.id]
+  amount decimal
+  currency varchar
+  order_src varchar
+  order_id varchar
+}
+
+Table user as U {
+  id int [pk, increment] // auto-increment
+  username varchar
+  category varchar
+  first_name varchar
+  last_name varchar
+  country_code int
+  email varchar
+  phone varchar
+  created_at timestamp
+}
+
+Table address {
+  id int [pk, increment]
+  line_1 varchar
+  line_2 varchar [null]
+  postal_code varchar
+  city varchar
+  state varchar
+  country varchar
+  other_details text [null]
+  user_id int [ref: > U.id]
+}
+
+// Creating references
+// You can also define relaionship separately
+// > many-to-one; < one-to-many; - one-to-one; <> many-to-many
+
+Table barcode {
+  id int [pk, increment]
+  barcode varchar
+  product_id int [ref: > product.id]
+}
+
+Table cask_type {
+  id int [pk, increment]
+  name varchar
+}
+
+Table cask_type_product {
+  product_id int [ref: > product.id]
+  cask_type_id int [ref: > cask_type.id]
+}
+
+Table region {
+  id int [pk, increment]
+  name varchar
+  country_iso varchar
+  country_name varchar
+}
+
+Table canne_type {
+  id int [pk, increment]
+  name varchar
+  description text
+}
+
+Table brand {
+  id int [pk, increment]
+  name varchar
+  description text
+  region_id int [ref: > region.id]
+}
+
+Table distillery {
+  id int [pk, increment]
+  name varchar
+  description text
+  creation_date date [null]
+  is_alive bool
+  closure_date date [null]
+  region_id int [ref: > region.id]
+}
+
+Table bottler {
+  id int [pk, increment]
+  name varchar
+  description text
+}
+
+Table ask {
+  id int [pk, increment]
+  status int
+  price float
+  description text
+  created_at timestamp
+  expirated_date timestamp
+  is_approved bool
+  is_private bool
+  linked_bid int [ref: > bid.id]
+  seller_id int [ref: > U.id]
+}
+
+Table message {
+  id int [pk, increment]
+  created_at timestamp
+  from_user int [ref: > U.id]
+  message text
+  ask_id int [ref: > ask.id]
+}
+
+Table ask_photos {
+  id int [pk, increment]
+  external_id varchar
+  url varchar
+  ask_id int [ref: > ask.id]
+}
+
+Table ask_shipping_method {
+  id int [pk, increment]
+  ask_id int [ref: > ask.id]
+  shipping_method_id int [ref: > shipping_method.id]
+}
+
+Table shipping_method {
+  id int [pk, increment]
+  name varchar
+}
+
+Table product_ask {
+  id int [pk, increment]
+  quantity int
+  is_sample bool
+  sample_size int [null]
+  bottle_nb int
+  ask_id int [ref: > ask.id]
+  product_id int [ref: > product.id]
+}
+
+Table bid {
+  id int [pk, increment]
+  product_id int [ref: > product.id]
+  max_price decimal
+  is_sample bool
+  min_sample_size decimal [null]
+  buyer_id int [ref: > U.id]
+}
+
+Table user_review {
+  id int [pk, increment]
+  data json
+  ask_id int [ref: > ask.id]
+}
+
+Table order {
+  id int [pk, increment]
+  buyer_id int [ref: > U.id]
+  created_at timestamp
+  status varchar
+  final_price decimal
+  billing_address_id int [ref: > address.id]
+  shipping_address_id int [ref: > address.id]
+  note text
+  is_paid bool
+}
+
+Table ask_order {
+  id int [pk, increment]
+  price decimal
+  order_id int [ref: > order.id]
+  ask_id int [ref: > ask.id]
+}
+
+Table feedback {
+  id int [pk, increment]
+  feedback text
+  order_id int [ref: > order.id]
+}
+
+Table payment {
+  id int [pk, increment]
+  external_source varchar
+  external_id varchar
+  order_id int [ref: > order.id]
+}
+
+Table shipment {
+  id int [pk, increment]
+  external_source varchar
+  external_id varchar
+  order_id int [ref: > order.id]
+}
+
