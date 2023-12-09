@@ -86,9 +86,6 @@ class ProductRead(ProductBase):
     created_date: datetime
     updated_date: datetime
 
-    class Config:
-        from_attributes = True
-
 
 class ProductList(BaseModel):
     list: list[ProductBase]

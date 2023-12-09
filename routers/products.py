@@ -27,8 +27,7 @@ def post_product(product: ProductCreate, db: Session = Depends(get_db)):
     return db_product
 
 
-# @ProductRouter.get("/{product_id}", response_model=ProductRead)
-@ProductRouter.get("/{product_id}")
+@ProductRouter.get("/{product_id}", response_model=ProductRead)
 def read_product(product_id: int, db: Session = Depends(get_db)):
     db_product = get_product(db, product_id=product_id)
     if db_product is None:
