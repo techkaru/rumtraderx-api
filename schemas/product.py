@@ -81,8 +81,8 @@ class ProductRead(ProductBase):
     bottler: Bottler | None = None
     canne_type: CanneType | None = None
     distillery: Distillery
-    product_asks: list[ProductAsk] = []
-    product_bids: list[ProductBid] = []
+    product_asks: list[ProductAsk] | None = []
+    product_bids: list[ProductBid] | None = []
     created_date: datetime
     updated_date: datetime
 
