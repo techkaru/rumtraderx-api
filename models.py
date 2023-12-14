@@ -13,14 +13,15 @@ class Product(Base):
     sku = Column(String, nullable=True)
     name = Column(String)
     slug = Column(String)
-    country = Column(String)
-    region = Column(String)
+    country = Column(String) ##
+    region = Column(String) ##
     description = Column(Text)
-    made_from = Column(String)
-    distillation_type = Column(String)
-    aging_climate = Column(String, nullable=True)
-    aging_type = Column(String, nullable=True)
+    made_from = Column(String) ##
+    distillation_type = Column(String) ##
+    ## aging_climate = Column(String, nullable=True) ##
+    aging_type = Column(String, nullable=True) ##
     batch = Column(Integer, nullable=True)
+    canne_type = Column(Integer, nullable=True)
     abv = Column(Float)
     size = Column(Integer)
     bottled_year = Column(Integer, nullable=True)
@@ -29,18 +30,20 @@ class Product(Base):
     total_bottles = Column(Integer, nullable=True)
     main_picture = Column(String, nullable=True)
     is_single_cask = Column(String, nullable=True)
+    cask_type = Column(String, nullable=True) ##
     cask_number = Column(String, nullable=True)
     is_bio = Column(Boolean, nullable=True)
     is_parcellaire = Column(Boolean, nullable=True)
     is_approved = Column(Boolean, default=False)
     is_discontinued = Column(Boolean, nullable=True)
-    production_method = Column(String)
     is_active = Column(Boolean, default=False)
-    production_method_detail_id = Column(Integer, ForeignKey('production_method_detail.id'))
+    production_method = Column(String) ##
+    production_method_detail = Column(String, nullable=True)
     brand_id = Column(Integer, ForeignKey('brand.id'))
     bottler_id = Column(Integer, ForeignKey('bottler.id'))
-    canne_type_id = Column(Integer, ForeignKey('canne_type.id'))
     distillery_id = Column(Integer, ForeignKey('distillery.id'))
+    created_date = Column(DateTime, default=datetime.utcnow)
+    updated_date = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     # CALCULATED FIELD
     min_ask_price = Column(Float, nullable=True)
     min_ask_id =  Column(Integer, ForeignKey('ask.id'), nullable=True)
@@ -54,15 +57,11 @@ class Product(Base):
     monthly_change = Column(Float, nullable=True)
     best_sale_price = Column(Float, nullable=True)
     last_buy_ask_price = Column(Float, nullable=True)
-    created_date = Column(DateTime, default=datetime.utcnow)
-    updated_date = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     # RELATIONSHIPS
     product_asks = relationship("ProductAsk", back_populates="product")
     product_bids = relationship("ProductBid", back_populates="product")
-    production_method_detail = relationship("ProductionMethodDetail", backref="products")
     brand = relationship("Brand", backref="products")
     bottler = relationship("Bottler", backref="products")
-    canne_type = relationship("CanneType", backref="products")
     distillery = relationship("Distillery", backref="products")
 
 
@@ -71,7 +70,7 @@ class ProductAsk(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     quantity = Column(Integer)
-    is_sample  = Column(Boolean)
+    is_sample  = Column(Boolean, default=False)
     sample_size  = Column(Integer, nullable=True)
     bottle_nb  = Column(Integer)
     ask_id = Column(Integer, ForeignKey('ask.id'))
@@ -124,14 +123,6 @@ class Bid(Base):
     updated_date = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
-class ProductionMethodDetail(Base):
-    __tablename__ = "production_method_detail"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    description = Column(String)
-
-
 class ProductPhoto(Base):
     __tablename__ = "product_photo"
 
@@ -168,35 +159,13 @@ class Address(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
 
 
-class Barcode(Base):
-    __tablename__ = "barcode"
+class ExternalRef(Base):
+    __tablename__ = "external_ref"
 
     id = Column(Integer, primary_key=True, index=True)
-    barcode = Column(String)
+    type = Column(String)
+    external_id = Column(String)
     product_id = Column(Integer, ForeignKey('product.id'))
-
-
-class CaskType(Base):
-    __tablename__ = "cask_type"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-
-
-class CaskTypeProduct(Base):
-    __tablename__ = "cask_type_product"
-
-    id = Column(Integer, primary_key=True, index=True)
-    product_id = Column(Integer, ForeignKey('product.id'))
-    cask_type_id = Column(Integer, ForeignKey('cask_type.id'))
-
-
-class CanneType(Base):
-    __tablename__ = "canne_type"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    description = Column(Text)
 
 
 class Brand(Base):
@@ -219,7 +188,14 @@ class Distillery(Base):
     is_alive  = Column(Boolean)
     closure_date = Column(DateTime, nullable=True)
     country = Column(String)
-    region = Column(String)
+    region = Column(String, nullable=True)
+    owned_by = Column(String, nullable=True)
+    city = Column(String)
+    address = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    website = Column(String, nullable=True)
+    coordinates_lon = Column(String, nullable=True)
+    coordinates_lat = Column(String, nullable=True)
 
 
 class Bottler(Base):

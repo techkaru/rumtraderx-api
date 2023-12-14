@@ -1,8 +1,8 @@
 """init
 
-Revision ID: b676c4883225
+Revision ID: ccd650a8d9f8
 Revises: 
-Create Date: 2023-12-03 15:34:06.422106
+Create Date: 2023-12-13 15:05:41.875029
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'b676c4883225'
+revision: str = 'ccd650a8d9f8'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -45,12 +45,6 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_canne_type_id'), 'canne_type', ['id'], unique=False)
-    op.create_table('cask_type',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_cask_type_id'), 'cask_type', ['id'], unique=False)
     op.create_table('distillery',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
@@ -60,16 +54,16 @@ def upgrade() -> None:
     sa.Column('closure_date', sa.DateTime(), nullable=True),
     sa.Column('country', sa.String(), nullable=True),
     sa.Column('region', sa.String(), nullable=True),
+    sa.Column('owned_by', sa.String(), nullable=True),
+    sa.Column('city', sa.String(), nullable=True),
+    sa.Column('address', sa.String(), nullable=True),
+    sa.Column('phone', sa.String(), nullable=True),
+    sa.Column('website', sa.String(), nullable=True),
+    sa.Column('coordinates_lon', sa.String(), nullable=True),
+    sa.Column('coordinates_lat', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_distillery_id'), 'distillery', ['id'], unique=False)
-    op.create_table('production_method_detail',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('description', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_production_method_detail_id'), 'production_method_detail', ['id'], unique=False)
     op.create_table('shipping_method',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
@@ -126,57 +120,6 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_bid_id'), 'bid', ['id'], unique=False)
-    op.create_table('product',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('category', sa.String(), nullable=True),
-    sa.Column('sku', sa.String(), nullable=True),
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('slug', sa.String(), nullable=True),
-    sa.Column('country', sa.String(), nullable=True),
-    sa.Column('region', sa.String(), nullable=True),
-    sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('made_from', sa.String(), nullable=True),
-    sa.Column('distillation_type', sa.String(), nullable=True),
-    sa.Column('aging_climate', sa.String(), nullable=True),
-    sa.Column('aging_type', sa.String(), nullable=True),
-    sa.Column('batch', sa.Integer(), nullable=True),
-    sa.Column('abv', sa.Float(), nullable=True),
-    sa.Column('size', sa.Integer(), nullable=True),
-    sa.Column('bottled_year', sa.Integer(), nullable=True),
-    sa.Column('year', sa.Integer(), nullable=True),
-    sa.Column('age', sa.Integer(), nullable=True),
-    sa.Column('total_bottles', sa.Integer(), nullable=True),
-    sa.Column('main_picture', sa.String(), nullable=True),
-    sa.Column('is_single_cask', sa.String(), nullable=True),
-    sa.Column('cask_number', sa.String(), nullable=True),
-    sa.Column('is_bio', sa.Boolean(), nullable=True),
-    sa.Column('is_parcellaire', sa.Boolean(), nullable=True),
-    sa.Column('is_approved', sa.Boolean(), nullable=True),
-    sa.Column('is_discontinued', sa.Boolean(), nullable=True),
-    sa.Column('production_method', sa.String(), nullable=True),
-    sa.Column('is_active', sa.Boolean(), nullable=True),
-    sa.Column('production_method_detail_id', sa.Integer(), nullable=True),
-    sa.Column('brand_id', sa.Integer(), nullable=True),
-    sa.Column('bottler_id', sa.Integer(), nullable=True),
-    sa.Column('canne_type_id', sa.Integer(), nullable=True),
-    sa.Column('distillery_id', sa.Integer(), nullable=True),
-    sa.Column('twelve_month_high', sa.Float(), nullable=True),
-    sa.Column('twelve_month_low', sa.Float(), nullable=True),
-    sa.Column('volatility', sa.Float(), nullable=True),
-    sa.Column('avg_sale_price', sa.Float(), nullable=True),
-    sa.Column('monthly_change', sa.Float(), nullable=True),
-    sa.Column('best_sale_price', sa.Float(), nullable=True),
-    sa.Column('last_buy_ask_price', sa.Float(), nullable=True),
-    sa.Column('created_date', sa.DateTime(), nullable=True),
-    sa.Column('updated_date', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['bottler_id'], ['bottler.id'], ),
-    sa.ForeignKeyConstraint(['brand_id'], ['brand.id'], ),
-    sa.ForeignKeyConstraint(['canne_type_id'], ['canne_type.id'], ),
-    sa.ForeignKeyConstraint(['distillery_id'], ['distillery.id'], ),
-    sa.ForeignKeyConstraint(['production_method_detail_id'], ['production_method_detail.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_product_id'), 'product', ['id'], unique=False)
     op.create_table('ask',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(), nullable=True),
@@ -195,23 +138,6 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_ask_id'), 'ask', ['id'], unique=False)
-    op.create_table('barcode',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('barcode', sa.String(), nullable=True),
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_barcode_id'), 'barcode', ['id'], unique=False)
-    op.create_table('cask_type_product',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.Column('cask_type_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['cask_type_id'], ['cask_type.id'], ),
-    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_cask_type_product_id'), 'cask_type_product', ['id'], unique=False)
     op.create_table('order',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('buyer_id', sa.Integer(), nullable=True),
@@ -228,38 +154,6 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_order_id'), 'order', ['id'], unique=False)
-    op.create_table('product_bid',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('is_sample', sa.Boolean(), nullable=True),
-    sa.Column('min_sample_size', sa.Integer(), nullable=True),
-    sa.Column('bid_id', sa.Integer(), nullable=True),
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['bid_id'], ['bid.id'], ),
-    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_product_bid_id'), 'product_bid', ['id'], unique=False)
-    op.create_table('product_photo',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('external_id', sa.String(), nullable=True),
-    sa.Column('url', sa.String(), nullable=True),
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_product_photo_id'), 'product_photo', ['id'], unique=False)
-    op.create_table('product_price',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('date', sa.DateTime(), nullable=True),
-    sa.Column('amount', sa.Float(), nullable=True),
-    sa.Column('currency', sa.String(), nullable=True),
-    sa.Column('order_src', sa.String(), nullable=True),
-    sa.Column('order_id', sa.String(), nullable=True),
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_product_price_id'), 'product_price', ['id'], unique=False)
     op.create_table('ask_order',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('price', sa.Float(), nullable=True),
@@ -318,19 +212,61 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_payment_id'), 'payment', ['id'], unique=False)
-    op.create_table('product_ask',
+    op.create_table('product',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('quantity', sa.Integer(), nullable=True),
-    sa.Column('is_sample', sa.Boolean(), nullable=True),
-    sa.Column('sample_size', sa.Integer(), nullable=True),
-    sa.Column('bottle_nb', sa.Integer(), nullable=True),
-    sa.Column('ask_id', sa.Integer(), nullable=True),
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['ask_id'], ['ask.id'], ),
-    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
+    sa.Column('category', sa.String(), nullable=True),
+    sa.Column('sku', sa.String(), nullable=True),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('slug', sa.String(), nullable=True),
+    sa.Column('country', sa.String(), nullable=True),
+    sa.Column('region', sa.String(), nullable=True),
+    sa.Column('description', sa.Text(), nullable=True),
+    sa.Column('made_from', sa.String(), nullable=True),
+    sa.Column('distillation_type', sa.String(), nullable=True),
+    sa.Column('aging_type', sa.String(), nullable=True),
+    sa.Column('batch', sa.Integer(), nullable=True),
+    sa.Column('canne_type', sa.Integer(), nullable=True),
+    sa.Column('abv', sa.Float(), nullable=True),
+    sa.Column('size', sa.Integer(), nullable=True),
+    sa.Column('bottled_year', sa.Integer(), nullable=True),
+    sa.Column('year', sa.Integer(), nullable=True),
+    sa.Column('age', sa.Integer(), nullable=True),
+    sa.Column('total_bottles', sa.Integer(), nullable=True),
+    sa.Column('main_picture', sa.String(), nullable=True),
+    sa.Column('is_single_cask', sa.String(), nullable=True),
+    sa.Column('cask_type', sa.String(), nullable=True),
+    sa.Column('cask_number', sa.String(), nullable=True),
+    sa.Column('is_bio', sa.Boolean(), nullable=True),
+    sa.Column('is_parcellaire', sa.Boolean(), nullable=True),
+    sa.Column('is_approved', sa.Boolean(), nullable=True),
+    sa.Column('is_discontinued', sa.Boolean(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.Column('production_method', sa.String(), nullable=True),
+    sa.Column('production_method_detail', sa.String(), nullable=True),
+    sa.Column('brand_id', sa.Integer(), nullable=True),
+    sa.Column('bottler_id', sa.Integer(), nullable=True),
+    sa.Column('distillery_id', sa.Integer(), nullable=True),
+    sa.Column('created_date', sa.DateTime(), nullable=True),
+    sa.Column('updated_date', sa.DateTime(), nullable=True),
+    sa.Column('min_ask_price', sa.Float(), nullable=True),
+    sa.Column('min_ask_id', sa.Integer(), nullable=True),
+    sa.Column('max_bid_price', sa.Float(), nullable=True),
+    sa.Column('max_bid_id', sa.Integer(), nullable=True),
+    sa.Column('twelve_month_high', sa.Float(), nullable=True),
+    sa.Column('twelve_month_low', sa.Float(), nullable=True),
+    sa.Column('volatility', sa.Float(), nullable=True),
+    sa.Column('avg_sale_price', sa.Float(), nullable=True),
+    sa.Column('monthly_change', sa.Float(), nullable=True),
+    sa.Column('best_sale_price', sa.Float(), nullable=True),
+    sa.Column('last_buy_ask_price', sa.Float(), nullable=True),
+    sa.ForeignKeyConstraint(['bottler_id'], ['bottler.id'], ),
+    sa.ForeignKeyConstraint(['brand_id'], ['brand.id'], ),
+    sa.ForeignKeyConstraint(['distillery_id'], ['distillery.id'], ),
+    sa.ForeignKeyConstraint(['max_bid_id'], ['bid.id'], ),
+    sa.ForeignKeyConstraint(['min_ask_id'], ['ask.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_product_ask_id'), 'product_ask', ['id'], unique=False)
+    op.create_index(op.f('ix_product_id'), 'product', ['id'], unique=False)
     op.create_table('user_review',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('note', sa.Float(), nullable=True),
@@ -340,15 +276,80 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_review_id'), 'user_review', ['id'], unique=False)
+    op.create_table('barcode',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('barcode', sa.String(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_barcode_id'), 'barcode', ['id'], unique=False)
+    op.create_table('product_ask',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('quantity', sa.Integer(), nullable=True),
+    sa.Column('is_sample', sa.Boolean(), nullable=True),
+    sa.Column('sample_size', sa.Integer(), nullable=True),
+    sa.Column('bottle_nb', sa.Integer(), nullable=True),
+    sa.Column('ask_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.ForeignKeyConstraint(['ask_id'], ['ask.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_product_ask_id'), 'product_ask', ['id'], unique=False)
+    op.create_table('product_bid',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('is_sample', sa.Boolean(), nullable=True),
+    sa.Column('min_sample_size', sa.Integer(), nullable=True),
+    sa.Column('bid_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.ForeignKeyConstraint(['bid_id'], ['bid.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_product_bid_id'), 'product_bid', ['id'], unique=False)
+    op.create_table('product_photo',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('external_id', sa.String(), nullable=True),
+    sa.Column('url', sa.String(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_product_photo_id'), 'product_photo', ['id'], unique=False)
+    op.create_table('product_price',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('amount', sa.Float(), nullable=True),
+    sa.Column('currency', sa.String(), nullable=True),
+    sa.Column('order_src', sa.String(), nullable=True),
+    sa.Column('order_id', sa.String(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_product_price_id'), 'product_price', ['id'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_index(op.f('ix_user_review_id'), table_name='user_review')
-    op.drop_table('user_review')
+    op.drop_index(op.f('ix_product_price_id'), table_name='product_price')
+    op.drop_table('product_price')
+    op.drop_index(op.f('ix_product_photo_id'), table_name='product_photo')
+    op.drop_table('product_photo')
+    op.drop_index(op.f('ix_product_bid_id'), table_name='product_bid')
+    op.drop_table('product_bid')
     op.drop_index(op.f('ix_product_ask_id'), table_name='product_ask')
     op.drop_table('product_ask')
+    op.drop_index(op.f('ix_barcode_id'), table_name='barcode')
+    op.drop_table('barcode')
+    op.drop_index(op.f('ix_user_review_id'), table_name='user_review')
+    op.drop_table('user_review')
+    op.drop_index(op.f('ix_product_id'), table_name='product')
+    op.drop_table('product')
     op.drop_index(op.f('ix_payment_id'), table_name='payment')
     op.drop_table('payment')
     op.drop_index(op.f('ix_message_id'), table_name='message')
@@ -361,22 +362,10 @@ def downgrade() -> None:
     op.drop_table('ask_photos')
     op.drop_index(op.f('ix_ask_order_id'), table_name='ask_order')
     op.drop_table('ask_order')
-    op.drop_index(op.f('ix_product_price_id'), table_name='product_price')
-    op.drop_table('product_price')
-    op.drop_index(op.f('ix_product_photo_id'), table_name='product_photo')
-    op.drop_table('product_photo')
-    op.drop_index(op.f('ix_product_bid_id'), table_name='product_bid')
-    op.drop_table('product_bid')
     op.drop_index(op.f('ix_order_id'), table_name='order')
     op.drop_table('order')
-    op.drop_index(op.f('ix_cask_type_product_id'), table_name='cask_type_product')
-    op.drop_table('cask_type_product')
-    op.drop_index(op.f('ix_barcode_id'), table_name='barcode')
-    op.drop_table('barcode')
     op.drop_index(op.f('ix_ask_id'), table_name='ask')
     op.drop_table('ask')
-    op.drop_index(op.f('ix_product_id'), table_name='product')
-    op.drop_table('product')
     op.drop_index(op.f('ix_bid_id'), table_name='bid')
     op.drop_table('bid')
     op.drop_index(op.f('ix_address_id'), table_name='address')
@@ -385,12 +374,8 @@ def downgrade() -> None:
     op.drop_table('user')
     op.drop_index(op.f('ix_shipping_method_id'), table_name='shipping_method')
     op.drop_table('shipping_method')
-    op.drop_index(op.f('ix_production_method_detail_id'), table_name='production_method_detail')
-    op.drop_table('production_method_detail')
     op.drop_index(op.f('ix_distillery_id'), table_name='distillery')
     op.drop_table('distillery')
-    op.drop_index(op.f('ix_cask_type_id'), table_name='cask_type')
-    op.drop_table('cask_type')
     op.drop_index(op.f('ix_canne_type_id'), table_name='canne_type')
     op.drop_table('canne_type')
     op.drop_index(op.f('ix_brand_id'), table_name='brand')

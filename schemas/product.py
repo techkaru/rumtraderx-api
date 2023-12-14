@@ -52,10 +52,9 @@ class ProductBase(BaseModel):
     min_ask_id: int | None = None
     max_bid_price: float | None = None
     max_bid_id: int | None = None
-    production_method_detail_id: int | None = None
+    production_method_detail: str | None = None
     brand_id: int
     bottler_id: int | None = None
-    canne_type_id: int | None = None
     distillery_id: int
 
 
@@ -77,14 +76,15 @@ class ProductRead(ProductBase):
     id: int
     slug: str
     brand: Brand
-    production_method_detail: ProductionMethodDetail | None = None
     bottler: Bottler | None = None
-    canne_type: CanneType | None = None
-    distillery: Distillery
-    product_asks: list[ProductAsk] | None = []
-    product_bids: list[ProductBid] | None = []
+    distillery: Distillery | None = None
     created_date: datetime
     updated_date: datetime
+
+
+class ProductReadWithAskAndBid(ProductRead):
+    product_asks: list[ProductAsk] | None = []
+    product_bids: list[ProductBid] | None = []
 
 
 class ProductList(BaseModel):

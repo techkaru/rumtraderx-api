@@ -45,6 +45,17 @@ class AskCreate(BaseModel):
     products_ask: list[ProductAskCreate]
 
 
+class ProductAskBase(BaseModel):
+    id: int
+    quantity: int
+    is_sample: bool
+    is_active: bool
+    sample_size: int | None = None
+    bottle_nb: int | None = None
+    ask_id: int
+    product_id: int
+
+
 class ProductAsk(BaseModel):
     id: int
     quantity: int
@@ -54,4 +65,6 @@ class ProductAsk(BaseModel):
     bottle_nb: int | None = None
     ask_id: int
     product_id: int
-    ask: Ask
+
+    class Config:
+        from_attributes = True 

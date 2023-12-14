@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 def get_products(db: Session, page: int, page_size: int):
     db_products = db.query(Product
+        ).filter(Product.is_approved == True
         ).limit(page_size
         ).offset(page*page_size
         ).all()
@@ -18,9 +19,7 @@ def get_product(db: Session, product_id: int):
         ).filter(Product.id == product_id
         ).join(Product.brand
         ).join(Product.bottler
-        ).join(Product.canne_type
         ).join(Product.distillery
-        ).outerjoin(Product.production_method_detail
         ).first()
 
     if product:
@@ -51,6 +50,7 @@ def create_product(db: Session, product: ProductCreate):
         batch=product.batch,
         abv=product.abv,
         size=product.size,
+        canne_type=product.canne_type,
         bottled_year=product.bottled_year,
         year=product.year,
         age=product.age,
@@ -64,10 +64,9 @@ def create_product(db: Session, product: ProductCreate):
         is_discontinued=product.is_discontinued,
         production_method=product.production_method,
         is_active=product.is_active,
-        production_method_detail_id=product.production_method_detail_id,
+        production_method_detail=product.production_method_detail,
         brand_id=product.brand_id,
         bottler_id=product.bottler_id,
-        canne_type_id=product.canne_type_id,
         distillery_id=product.distillery_id,
         region=product.region,
         country=product.country

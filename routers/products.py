@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 
 from crud.product import create_product, get_product, get_products
-from schemas.product import Product, ProductCreate, ProductRead, ProductList
+from schemas.product import Product, ProductCreate, ProductRead, ProductList, ProductReadWithAskAndBid
 
 
 # Dependency
@@ -27,7 +27,7 @@ def post_product(product: ProductCreate, db: Session = Depends(get_db)):
     return db_product
 
 
-@ProductRouter.get("/{product_id}", response_model=ProductRead)
+@ProductRouter.get("/{product_id}", response_model=ProductReadWithAskAndBid)
 def read_product(product_id: int, db: Session = Depends(get_db)):
     db_product = get_product(db, product_id=product_id)
     if db_product is None:

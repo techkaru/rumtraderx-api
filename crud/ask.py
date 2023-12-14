@@ -31,3 +31,12 @@ def create_ask(db: Session, ask: AskCreate):
         db.refresh(db_product_ask)
 
     return db_ask
+
+
+def get_ask(db: Session, ask_id: int):
+    return db.query(ProductAsk
+        ).filter(ProductAsk.is_active == True
+        ).filter(ProductAsk.ask_id == ask_id
+        ).join(ProductAsk.ask
+        ).join(ProductAsk.product
+        ).first()
